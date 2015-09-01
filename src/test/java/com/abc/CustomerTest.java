@@ -1,5 +1,7 @@
 package com.abc;
 
+import java.math.BigDecimal;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -10,14 +12,15 @@ public class CustomerTest {
     @Test //Test customer statement generation
     public void testApp(){
 
-        Account checkingAccount = new Account(Account.CHECKING);
-        Account savingsAccount = new Account(Account.SAVINGS);
+    	Customer henry = new Customer("Henry");
+        Account checkingAccount = new Account(Account.CHECKING, "C0001", henry, new BigDecimal(0));
+        Account savingsAccount = new Account(Account.SAVINGS,"S0001", henry, new BigDecimal(0));
 
-        Customer henry = new Customer("Henry").openAccount(checkingAccount).openAccount(savingsAccount);
+        henry.openAccount(checkingAccount).openAccount(savingsAccount);
 
-        checkingAccount.deposit(100.0);
-        savingsAccount.deposit(4000.0);
-        savingsAccount.withdraw(200.0);
+        checkingAccount.deposit(new BigDecimal(100.0));
+        savingsAccount.deposit( new BigDecimal (4000.0));
+        savingsAccount.withdraw(new BigDecimal (200.0));
 
         assertEquals("Statement for Henry\n" +
                 "\n" +
@@ -35,23 +38,25 @@ public class CustomerTest {
 
     @Test
     public void testOneAccount(){
-        Customer oscar = new Customer("Oscar").openAccount(new Account(Account.SAVINGS));
+        Customer oscar = new Customer("Oscar");
+        oscar.openAccount(new Account(Account.SAVINGS, "S00002", oscar, new BigDecimal(0)));
         assertEquals(1, oscar.getNumberOfAccounts());
     }
 
     @Test
     public void testTwoAccount(){
-        Customer oscar = new Customer("Oscar")
-                .openAccount(new Account(Account.SAVINGS));
-        oscar.openAccount(new Account(Account.CHECKING));
+        Customer oscar = new Customer("Oscar");
+        oscar.openAccount(new Account(Account.SAVINGS, "S00004", oscar, new BigDecimal(0)));
+        oscar.openAccount(new Account(Account.CHECKING, "C00004", oscar, new BigDecimal(0)));
         assertEquals(2, oscar.getNumberOfAccounts());
     }
 
     @Ignore
     public void testThreeAcounts() {
-        Customer oscar = new Customer("Oscar")
-                .openAccount(new Account(Account.SAVINGS));
-        oscar.openAccount(new Account(Account.CHECKING));
+        Customer oscar = new Customer("Oscar");
+        oscar.openAccount(new Account(Account.SAVINGS, "S00001", oscar, new BigDecimal(0)));
+        oscar.openAccount(new Account(Account.CHECKING, "C00001", oscar, new BigDecimal(0)));
+        oscar.openAccount(new Account(Account.CHECKING, "C00002", oscar, new BigDecimal(0)));
         assertEquals(3, oscar.getNumberOfAccounts());
     }
 }
