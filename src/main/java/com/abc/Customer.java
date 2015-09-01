@@ -1,5 +1,6 @@
 package com.abc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,20 +28,20 @@ public class Customer {
         return accounts.size();
     }
 
-    public double totalInterestEarned() {
-        double total = 0;
+    public BigDecimal totalInterestEarned() {
+        BigDecimal total = new BigDecimal(0);
         for (Account a : accounts)
-            total += a.interestEarned();
+            total = total.add(a.interestEarned());
         return total;
     }
 
     public String getStatement() {
         String statement = null;
         statement = "Statement for " + name + "\n";
-        double total = 0.0;
+        BigDecimal total = new BigDecimal(0);
         for (Account a : accounts) {
             statement += "\n" + statementForAccount(a) + "\n";
-            total += a.sumTransactions();
+            total = total.add( a.sumTransactions() );
         }
         statement += "\nTotal In All Accounts " + toDollars(total);
         return statement;
@@ -63,16 +64,16 @@ public class Customer {
         }
 
         //Now total up all the transactions
-        double total = 0.0;
-        for (Transaction t : a.transactions) {
-            s += "  " + (t.amount < 0 ? "withdrawal" : "deposit") + " " + toDollars(t.amount) + "\n";
-            total += t.amount;
+        BigDecimal total = new BigDecimal(0);
+        for (Transaction t : a.getTransactions()) {
+            s += "  " + ( t.getAmount().signum() < 0 ? "withdrawal" : "deposit") + " " + toDollars(t.getAmount()) + "\n";
+            total =total.add( t.getAmount() );
         }
         s += "Total " + toDollars(total);
         return s;
     }
 
-    private String toDollars(double d){
-        return String.format("$%,.2f", abs(d));
+    private String toDollars(BigDecimal d){
+        return String.format("$%,.2f", d.abs());
     }
 }
